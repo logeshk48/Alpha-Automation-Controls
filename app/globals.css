@@ -1,26 +1,238 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ==========================================================================
+   ALPHA AUTOMATION & CONTROLS — DESIGN TOKENS
+   Tailwind v4 CSS-first configuration.
+   Single source of truth for colour, type, spacing and motion.
+   ========================================================================== */
+
+@theme {
+  /* ---- Neutral scale: near-black -> graphite -> metallic -> white --------
+     Cool-neutral with a slight blue cast, which reads as "engineered"
+     rather than warm. Used for ~95% of the interface. */
+  --color-ink-950: #08090a; /* near-black — deepest sections, hero overlay  */
+  --color-ink-900: #0d0f11; /* primary dark surface                        */
+  --color-ink-850: #131619; /* raised dark surface                         */
+  --color-ink-800: #1a1e22; /* charcoal — cards on dark                    */
+  --color-ink-700: #262b31; /* hairline borders on dark                    */
+  --color-ink-600: #3a4148; /* disabled / deep metallic                    */
+  --color-ink-500: #5b646d; /* metallic gray — muted text on dark          */
+  --color-ink-400: #838d97; /* secondary text on dark                      */
+  --color-ink-300: #aeb6bd; /* tertiary text on light                      */
+  --color-ink-200: #d4d9dd; /* hairline borders on light                   */
+  --color-ink-100: #e8ebee; /* light surface, alternating sections         */
+  --color-ink-050: #f4f6f7; /* cool white — page background                */
+  --color-ink-000: #ffffff;
+
+  /* ---- Accent -----------------------------------------------------------
+     PROVISIONAL — not the final brand accent. Industrial signal-amber,
+     conventional in automation contexts, holds contrast on dark and light.
+     TO FINALISE: sample from the Alpha logo, change ONLY these four values.
+     Nothing else in the codebase hardcodes a hue. */
+  --color-accent-600: #c74e08;
+  --color-accent-500: #e85d0a; /* base accent                              */
+  --color-accent-400: #ff7a2a;
+  --color-accent-300: #ff9d5c;
+
+  /* ---- Status (functional only — forms, indicators; never decorative) --- */
+  --color-signal-ok: #3f9e6a;
+  --color-signal-warn: #d9a441;
+  --color-signal-error: #d0453b;
+
+  /* ---- Typography -------------------------------------------------------
+     Display : grotesk for headings and large numerals
+     Body    : readable companion at lighter weights
+     Mono    : technical eyebrows, section numbers, labels
+     Wired up in app/layout.tsx via next/font (File 2). */
+  --font-display: var(--font-sans-display), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-sans-body), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-technical), ui-monospace, monospace;
+
+  /* Editorial display scale — fluid, clamped, no runaway mobile type */
+  --text-display-xl: clamp(2.75rem, 7.5vw, 7.5rem);
+  --text-display-xl--line-height: 0.94;
+  --text-display-xl--letter-spacing: -0.035em;
+
+  --text-display-lg: clamp(2.25rem, 5.5vw, 5rem);
+  --text-display-lg--line-height: 0.98;
+  --text-display-lg--letter-spacing: -0.03em;
+
+  --text-display-md: clamp(1.75rem, 3.8vw, 3.25rem);
+  --text-display-md--line-height: 1.05;
+  --text-display-md--letter-spacing: -0.02em;
+
+  --text-display-sm: clamp(1.375rem, 2.4vw, 2rem);
+  --text-display-sm--line-height: 1.15;
+  --text-display-sm--letter-spacing: -0.015em;
+
+  /* Technical eyebrow / label — uppercase mono, wide tracking */
+  --text-eyebrow: 0.6875rem;
+  --text-eyebrow--line-height: 1.2;
+  --text-eyebrow--letter-spacing: 0.18em;
+
+  /* ---- Layout — wide and editorial, not boxed-corporate ----------------- */
+  --container-shell: 96rem;
+
+  /* ---- Motion — restrained. Nothing bounces. 200-600ms band. ------------ */
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+  --duration-micro: 200ms;  /* hover, colour, border                       */
+  --duration-ui: 320ms;     /* navbar state, menu items                    */
+  --duration-reveal: 600ms; /* scroll reveals, image masks                 */
+
+  /* ---- Radii — near-square. Industrial hardware is not rounded. --------- */
+  --radius-xs: 2px;
+  --radius-sm: 3px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* ==========================================================================
+   BASE
+   ========================================================================== */
 
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --shell-gutter: 1.5rem;
+    /* Consumed by the navigation in Phase 3 to offset sticky anchors. */
+    --nav-height: 5.5rem;
+  }
+
+  @media (min-width: 768px) {
+    :root {
+      --shell-gutter: 2.5rem;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    :root {
+      --shell-gutter: 4rem;
+    }
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: var(--nav-height);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-ink-050);
+    color: var(--color-ink-900);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    /* Guards against horizontal overflow from parallax / horizontal scroll. */
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Visible, high-contrast focus ring on every interactive element. */
+  :focus-visible {
+    outline: 2px solid var(--color-accent-500);
+    outline-offset: 3px;
+    border-radius: 1px;
+  }
+
+  /* Locks background scroll while the mobile menu is open (Phase 3). */
+  body[data-scroll-locked="true"] {
+    overflow: hidden;
+  }
+
+  ::selection {
+    background-color: var(--color-accent-500);
+    color: var(--color-ink-000);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ==========================================================================
+   PRIMITIVES — kept small. Component styling lives in components.
+   ========================================================================== */
+
+@layer components {
+  /* Page shell — consistent gutters at every breakpoint. */
+  .shell {
+    width: 100%;
+    max-width: var(--container-shell);
+    margin-inline: auto;
+    padding-inline: var(--shell-gutter);
+  }
+
+  /* Uppercase mono technical label, e.g. "01 / SERVICES". */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--text-eyebrow);
+    line-height: 1.2;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  /* Hairline divider that adapts to dark and light sections. */
+  .hairline {
+    border-color: color-mix(in oklab, currentColor 14%, transparent);
+  }
+}
+
+/* ==========================================================================
+   ENGINEERING DETAIL — subtle grid texture.
+   Opacity is intentionally very low. If it reads as "sci-fi", it is wrong.
+   ========================================================================== */
+
+@layer utilities {
+  .texture-grid {
+    background-image:
+      linear-gradient(
+        to right,
+        color-mix(in oklab, currentColor 8%, transparent) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        to bottom,
+        color-mix(in oklab, currentColor 8%, transparent) 1px,
+        transparent 1px
+      );
+    background-size: 72px 72px;
+  }
+
+  /* Screen-reader-only, but focusable — used by the skip link. */
+  .sr-only-focusable:not(:focus):not(:focus-within) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+/* ==========================================================================
+   REDUCED MOTION — global safety net.
+   Components must ALSO branch on useReducedMotion(), not rely on this alone.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
