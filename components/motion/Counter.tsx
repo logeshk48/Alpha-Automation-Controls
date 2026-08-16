@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  animate,
-  useInView,
-  useReducedMotion,
-} from "framer-motion";
+import { animate, useInView, useReducedMotion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
 interface CounterProps {
@@ -14,32 +10,32 @@ interface CounterProps {
   suffix?: string;
   /** Seconds. Longer for larger numbers so the pace stays readable. */
   duration?: number;
+  /** Seconds to wait after entering view. Used to stagger a row. */
+  delay?: number;
   className?: string;
 }
 
 /**
  * Count-up number, triggered when scrolled into view.
  *
- * Two details worth knowing:
+ * The easing is the whole effect. A linear count is a progress bar; a hard
+ * decelerating curve makes the number sprint and then settle, which reads as
+ * a value arriving rather than a loop finishing. Most of the duration is
+ * spent in the last 20% of the range.
  *
- * The displayed value lives in state, but the animation itself runs through
- * Framer's imperative `animate()` rather than a spring on a DOM node. That
- * keeps the number an actual text node, so it stays selectable and readable
- * by screen readers.
- *
- * The element is given its final value in `aria-label` and the animating
- * text is hidden from assistive tech. A screen reader announcing "one,
- * four, nine, three hundred, seven hundred, one thousand" as it ticks is
- * worse than useless.
+ * Accessibility: the element carries its final value in aria-label and the
+ * ticking text is hidden. A screen reader announcing every intermediate
+ * number would be worse than useless.
  */
 export function Counter({
   to,
   suffix = "",
-  duration = 1.8,
+  duration = 2.4,
+  delay = 0,
   className,
 }: CounterProps) {
   const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true, amount: 0.4 });
+  const isInView = useInView(ref, { once: true, amount: 0.5 });
   const prefersReducedMotion = useReducedMotion();
   const [display, setDisplay] = useState(0);
 
@@ -51,16 +47,17 @@ export function Counter({
       return;
     }
 
-    /* easeOut: the number sprints early and settles slowly, which reads as
-       deliberate. A linear count feels mechanical. */
     const controls = animate(0, to, {
       duration,
-      ease: [0.22, 1, 0.36, 1],
+      delay,
+      /* expo-out: ~80% of the range covered in the first third, then a long
+         settle. This is what makes the number feel like it lands. */
+      ease: [0.16, 1, 0.3, 1],
       onUpdate: (value) => setDisplay(Math.round(value)),
     });
 
     return () => controls.stop();
-  }, [isInView, to, duration, prefersReducedMotion]);
+  }, [isInView, to, duration, delay, prefersReducedMotion]);
 
   return (
     <span
@@ -72,7 +69,7 @@ export function Counter({
     >
       <span aria-hidden="true">
         {display.toLocaleString("en-IN")}
-        {suffix}
+        <span className="text-accent-500">{suffix}</span>
       </span>
     </span>
   );
