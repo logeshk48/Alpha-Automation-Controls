@@ -24,15 +24,18 @@
   --color-ink-050: #f4f6f7; /* cool white — page background                */
   --color-ink-000: #ffffff;
 
-  /* ---- Accent -----------------------------------------------------------
-     PROVISIONAL — not the final brand accent. Industrial signal-amber,
-     conventional in automation contexts, holds contrast on dark and light.
-     TO FINALISE: sample from the Alpha logo, change ONLY these four values.
-     Nothing else in the codebase hardcodes a hue. */
-  --color-accent-600: #c74e08;
-  --color-accent-500: #e85d0a; /* base accent                              */
-  --color-accent-400: #ff7a2a;
-  --color-accent-300: #ff9d5c;
+/* ---- Accent -----------------------------------------------------------
+     Industrial green, carried over from the existing Alpha site. Slightly
+     cool-cast: the blue lean reads technical, where a yellow lean would read
+     eco/organic — wrong register for automation.
+
+     600 holds text contrast on white; 400 stays legible on near-black.
+     PENDING: exact hue to be confirmed against the Alpha logo. When it is,
+     change ONLY these four values — nothing else hardcodes a hue. */
+  --color-accent-600: #06744c; /* hover on light surfaces                  */
+  --color-accent-500: #0a9d66; /* base — CTA, active states, hairlines     */
+  --color-accent-400: #22c289; /* accent on dark surfaces                  */
+  --color-accent-300: #6bdcb0; /* subtle tints                             */
 
   /* ---- Status (functional only — forms, indicators; never decorative) --- */
   --color-signal-ok: #3f9e6a;
