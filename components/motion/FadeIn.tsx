@@ -10,6 +10,18 @@ interface FadeInProps {
   from?: "bottom" | "top" | "left" | "right";
   className?: string;
   as?: "div" | "section" | "article" | "li" | "span";
+  /**
+   * When the reveal fires.
+   *
+   *   "mount" — immediately on render. Use for above-the-fold content.
+   *   "view"  — when scrolled into view. Use for everything below the fold.
+   *
+   * This distinction matters more than it looks. A scroll-triggered reveal
+   * starts fully hidden, so if the observer never fires the content stays
+   * invisible. Above the fold there is nothing to wait for, and the observer
+   * is a liability rather than a feature.
+   */
+  trigger?: "mount" | "view";
 }
 
 /**
@@ -31,6 +43,7 @@ export function FadeIn({
   from = "bottom",
   className,
   as = "div",
+  trigger = "view",
 }: FadeInProps) {
   const prefersReducedMotion = useReducedMotion();
   const MotionTag = motion[as];
@@ -42,17 +55,32 @@ export function FadeIn({
     right: { x: distance, y: 0 },
   }[from];
 
+  const target = { opacity: 1, x: 0, y: 0 };
+
+  const shared = {
+    className,
+    initial: { opacity: 0, ...offset },
+    transition: prefersReducedMotion
+      ? { duration: 0 }
+      : { duration: 0.6, delay, ease: [0.25, 1, 0.5, 1] as const },
+  };
+
+  if (trigger === "mount") {
+    return (
+      <MotionTag {...shared} animate={target}>
+        {children}
+      </MotionTag>
+    );
+  }
+
   return (
     <MotionTag
-      className={className}
-      initial={{ opacity: 0, ...offset }}
-      whileInView={{ opacity: 1, x: 0, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={
-        prefersReducedMotion
-          ? { duration: 0 }
-          : { duration: 0.6, delay, ease: [0.25, 1, 0.5, 1] }
-      }
+      {...shared}
+      whileInView={target}
+      /* amount rather than a negative margin: margin shrinks the detection
+         area, which on short viewports can push the trigger point past the
+         element entirely and leave it permanently hidden. */
+      viewport={{ once: true, amount: 0.15 }}
     >
       {children}
     </MotionTag>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Archivo, Inter, JetBrains_Mono } from "next/font/google";
+import { Navbar } from "@/components/navigation/Navbar";
 import "./globals.css";
 
 /* --------------------------------------------------------------------------
@@ -88,11 +89,13 @@ export default function RootLayout({
           Skip to content
         </a>
 
-        {/* Navigation slots in above this in Phase 3. */}
+        {/* Fixed overlay. It sits outside <main> so the skip link genuinely
+            bypasses it rather than landing back inside the navigation. */}
+        <Navbar />
 
         <main id="main">{children}</main>
 
-        {/* Footer slots in below this in Phase 3. */}
+        {/* Footer mounts here in Phase 3b, once contact details are confirmed. */}
       </body>
     </html>
   );

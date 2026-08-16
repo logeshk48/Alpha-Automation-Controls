@@ -24,18 +24,21 @@
   --color-ink-050: #f4f6f7; /* cool white — page background                */
   --color-ink-000: #ffffff;
 
-/* ---- Accent -----------------------------------------------------------
-     Industrial green, carried over from the existing Alpha site. Slightly
-     cool-cast: the blue lean reads technical, where a yellow lean would read
-     eco/organic — wrong register for automation.
+  /* ---- Accent -----------------------------------------------------------
+     Sampled directly from the Alpha logo (#3fa35b, the green swoosh).
 
-     600 holds text contrast on white; 400 stays legible on near-black.
-     PENDING: exact hue to be confirmed against the Alpha logo. When it is,
-     change ONLY these four values — nothing else hardcodes a hue. */
-  --color-accent-600: #06744c; /* hover on light surfaces                  */
-  --color-accent-500: #0a9d66; /* base — CTA, active states, hairlines     */
-  --color-accent-400: #22c289; /* accent on dark surfaces                  */
-  --color-accent-300: #6bdcb0; /* subtle tints                             */
+     500 is the brand green exactly. The other three exist because one hue
+     cannot serve every context: #3fa35b sits at 3.2:1 against white, which
+     is fine for a logo but fails AA for text, so 600 handles text and hover
+     on light surfaces at 5.1:1. Against near-black the brand green already
+     reaches 6.2:1, so 400 and 300 are for hover and tints rather than
+     rescue.
+
+     Changing the brand hue means changing only these four values. */
+  --color-accent-600: #2f7d47; /* text/hover on light surfaces             */
+  --color-accent-500: #3fa35b; /* brand green — CTA, active states         */
+  --color-accent-400: #63bd7c; /* hover on dark surfaces                   */
+  --color-accent-300: #9ad9ac; /* subtle tints                             */
 
   /* ---- Status (functional only — forms, indicators; never decorative) --- */
   --color-signal-ok: #3f9e6a;
@@ -95,8 +98,11 @@
 @layer base {
   :root {
     --shell-gutter: 1.5rem;
-    /* Consumed by the navigation in Phase 3 to offset sticky anchors. */
-    --nav-height: 5.5rem;
+    /* Consumed by the navigation to offset sticky anchors. Two values:
+       the taller one applies at the top of the page, the compact one after
+       the navbar transitions on scroll. */
+    --nav-height: 6.5rem;
+    --nav-height-compact: 4.25rem;
   }
 
   @media (min-width: 768px) {
@@ -147,7 +153,7 @@
     border-radius: 1px;
   }
 
-  /* Locks background scroll while the mobile menu is open (Phase 3). */
+  /* Locks background scroll while the mobile menu is open. */
   body[data-scroll-locked="true"] {
     overflow: hidden;
   }

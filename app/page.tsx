@@ -5,16 +5,19 @@ import { company } from "@/data/company";
 import { sectionNumber } from "@/lib/utils";
 
 /* --------------------------------------------------------------------------
-   HOMEPAGE — Phase 2 holding state.
+   HOMEPAGE — Phase 3 holding state.
 
-   Still not the real homepage. This exists to prove the motion primitives
-   work together and that the sequencing reads correctly before we depend on
-   them across sixteen sections.
+   Still not the real homepage. This proves the motion primitives work
+   together and that the sequencing reads correctly before sixteen sections
+   depend on them.
 
-   Note this file has no "use client" directive. It is a Server Component —
-   only the three motion wrappers are client-side. That boundary is the whole
-   point of the architecture: content stays on the server, interaction does
-   not.
+   Note there is no "use client" directive. This is a Server Component — only
+   the motion wrappers are client-side. That boundary is the point of the
+   architecture: content stays on the server, interaction does not.
+
+   Everything above the fold uses trigger="mount". Scroll-triggered reveals
+   start fully hidden, so anything the visitor sees before scrolling must not
+   depend on an intersection observer firing.
    -------------------------------------------------------------------------- */
 
 export default function HomePage() {
@@ -32,9 +35,11 @@ export default function HomePage() {
         className="absolute inset-x-0 top-0 h-px bg-accent-500"
       />
 
-      <div className="shell relative py-32 md:py-40">
+      {/* Top padding clears the navbar, which is fixed and overlays this
+          section. Replaced by the real hero in Phase 4. */}
+      <div className="shell relative py-40 md:py-48">
         {/* Eyebrow enters first — the smallest element sets the pace. */}
-        <FadeIn distance={12}>
+        <FadeIn distance={12} trigger="mount">
           <p className="eyebrow flex items-center gap-3 text-ink-400">
             <span
               aria-hidden="true"
@@ -44,19 +49,23 @@ export default function HomePage() {
           </p>
         </FadeIn>
 
-        {/* Heading: each line masked separately, second trailing the first.
-            The block wrapper keeps the lines stacked — Reveal is inline-block
-            so two adjacent Reveals would otherwise sit side by side. */}
+        {/* Heading: each line masked separately, the second trailing the
+            first. The block wrapper keeps the lines stacked — Reveal is
+            inline-block, so two adjacent Reveals would sit side by side. */}
         <h1 className="mt-8 max-w-5xl text-display-xl font-semibold">
           <span className="block overflow-hidden">
-            <Reveal delay={0.15}>Industrial Automation</Reveal>
+            <Reveal delay={0.15} trigger="mount">
+              Industrial Automation
+            </Reveal>
           </span>
           <span className="block overflow-hidden text-ink-400">
-            <Reveal delay={0.28}>&amp; Control Solutions</Reveal>
+            <Reveal delay={0.28} trigger="mount">
+              &amp; Control Solutions
+            </Reveal>
           </span>
         </h1>
 
-        <FadeIn delay={0.45}>
+        <FadeIn delay={0.45} trigger="mount">
           <p className="mt-10 max-w-xl text-base leading-relaxed text-ink-300 md:text-lg">
             {company.legalName} designs and builds industrial control panels and
             automation systems for manufacturing and process plants.
@@ -91,7 +100,7 @@ export default function HomePage() {
 
         <FadeIn delay={1.1}>
           <p className="eyebrow mt-24 text-ink-600">
-            Phase 2 — Motion system verification
+            Phase 3 — Navigation system
           </p>
         </FadeIn>
       </div>
