@@ -136,3 +136,21 @@ export function formatAddress(address: PostalAddress): string[] {
     `${address.state}, ${address.country}`,
   ].filter((line): line is string => line !== null);
 }
+/** Hero counters. Years derives from the founding year so it stays current. */
+export const metrics = [
+  { to: new Date().getFullYear() - 2007, suffix: "+", label: "Years of expertise", status: "verified" as ContentStatus },
+  { to: 1000, suffix: "+", label: "Projects delivered", status: "verified" as ContentStatus },
+  { to: 500, suffix: "+", label: "Customers served", status: "verified" as ContentStatus },
+  { to: 15, suffix: "+", label: "Countries exported", status: "verified" as ContentStatus },
+];
+
+/** Hero copy, as approved in the landing page concept. */
+export const hero = {
+  eyebrow: "Since 2007 · Coimbatore, India",
+  headingLead: "Control panels and automation,",
+  headingEmphasis: "engineered",
+  headingTail: "to run for decades.",
+  description:
+    "Alpha Automation & Controls designs, manufactures and commissions UL & CE certified control panels and turnkey automation for manufacturers across 15+ countries.",
+  status: "verified" as ContentStatus,
+};
