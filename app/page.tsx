@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Hero } from "@/components/home/Hero";
 import { Metrics } from "@/components/home/Metrics";
+import { Process } from "@/components/home/Process";
 import { Solutions } from "@/components/home/Solutions";
 
 export const metadata: Metadata = {
@@ -17,8 +18,9 @@ export default function HomePage() {
       <Hero />
       <Metrics />
       <Solutions />
+      <Process />
 
-      {/* Sections 02–05 and the closing CTA mount here as they are built. */}
+      {/* Sections 03–05 and the closing CTA mount here as they are built. */}
     </>
   );
 }
