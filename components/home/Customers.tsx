@@ -90,7 +90,7 @@ export function Customers() {
   const doubled = [...customers, ...customers];
 
   return (
-    <section className="relative overflow-hidden border-y border-ink-800 bg-ink-950 py-24 text-ink-000 md:py-32">
+        <section className="relative overflow-hidden border-y border-ink-800 bg-ink-950 pb-14 pt-20 text-ink-000 md:pb-16 md:pt-24">
       {/* Faint accent wash — stops the band reading as a flat black rectangle
           between two other dark sections. */}
       <div
@@ -159,7 +159,7 @@ export function Customers() {
 
       {/* The row sits outside the shell so it runs the full width. */}
       <motion.div
-        className="marquee-mask marquee-row mt-20"
+                className="marquee-mask marquee-row mt-14"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, amount: 0.3 }}
