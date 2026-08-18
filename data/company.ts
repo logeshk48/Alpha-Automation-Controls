@@ -49,7 +49,13 @@ export const company = {
     status: "verified",
   } as Verifiable<string>,
 
-  /** Confirmed against Alpha's Google Business listing. */
+  /**
+   * Confirmed against Alpha's Google Business listing.
+   *
+   * NOTE: the listing spells the street "Poothottam" with two Ts; Alpha's own
+   * site footer uses "Poothotam" with one. The Google spelling is used here.
+   * Worth settling before this goes into LocalBusiness schema.
+   */
   address: {
     value: {
       doorNo: "1/12-10",
@@ -100,26 +106,36 @@ export const company = {
   } as Record<string, Verifiable<string | null>>,
 
   /**
-   * Platforms confirmed, URLs are not. The footer filters out any entry whose
-   * href is still "#", so these render only once real links are supplied —
-   * three links that go nowhere is worse than no social row at all.
+   * Taken from Alpha's live site footer.
+   *
+   * The footer filters out any entry whose href is still "#", so adding a
+   * platform here without a real URL simply hides it rather than rendering a
+   * dead link.
    */
   social: {
     value: [
-      { platform: "LinkedIn", href: "#" },
-      { platform: "Instagram", href: "#" },
-      { platform: "YouTube", href: "#" },
+      {
+        platform: "LinkedIn",
+        href: "https://www.linkedin.com/company/alpha-automation-and-controls/",
+      },
+      {
+        platform: "Instagram",
+        href: "https://www.instagram.com/alpha_automation_cbe",
+      },
+      {
+        platform: "YouTube",
+        href: "https://www.youtube.com/@alphaautomationandcontrols2499",
+      },
     ],
-    status: "placeholder",
-    note: "[Company to provide profile URLs]",
+    status: "verified",
   } as Verifiable<Array<{ platform: string; href: string }>>,
 } as const;
 
 /**
  * Hero counters.
  *
- * Years derives from foundedYear rather than being hardcoded, so it stays
- * correct without anyone remembering to update it each January.
+ * Years derives from the founding year rather than being hardcoded, so it
+ * stays correct without anyone remembering to update it each January.
  */
 export const metrics = [
   {

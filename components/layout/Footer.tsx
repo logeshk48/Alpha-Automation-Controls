@@ -11,20 +11,20 @@ import { footerNavigation, primaryCta } from "@/data/navigation";
 /* --------------------------------------------------------------------------
    FOOTER
 
-   Three bands: a contact block, a navigation grid, and a legal strip.
+   Four bands: brand, contact, navigation, legal.
 
-   The contact details carry the most weight — larger, iconed, hoverable —
-   because on an industrial site the footer is where buyers go to find a
-   phone number, not to browse. Navigation is secondary and set small.
+   The social icons sit under the brand block rather than in the legal strip.
+   Buried at the very bottom beside the copyright they read as an
+   afterthought and are easy to miss entirely; grouped with the logo and the
+   description they read as part of the company's identity.
+
+   Contact details carry the most weight — iconed, hoverable, generously
+   sized — because on an industrial site the footer is where buyers go to
+   find a phone number, not to browse.
 
    BRAND ICONS are inline SVGs rather than library imports. lucide-react
    removed Instagram, LinkedIn and YouTube in v1 over trademark concerns, so
-   importing them breaks the build. Defining the three paths here costs
-   nothing and cannot be removed by a dependency update.
-
-   Social links render only when a real URL exists. data/company.ts currently
-   has them as "#", so they are filtered out — three links that go nowhere is
-   worse than no social row. They appear automatically once URLs are added.
+   importing them breaks the build.
    -------------------------------------------------------------------------- */
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -74,7 +74,8 @@ export function Footer() {
   const phone = company.contact.phone.value;
   const gstin = company.registration.gstin.value;
 
-  /* Only render social links that actually point somewhere. */
+  /* Only render social links that actually point somewhere — an entry left
+     as "#" is hidden rather than rendered as a dead link. */
   const socials = company.social.value.filter(
     (item) => item.href && item.href !== "#",
   );
@@ -129,22 +130,23 @@ export function Footer() {
       />
 
       <div className="shell relative">
-        {/* ---- CONTACT BAND ------------------------------------------- */}
-        <div className="grid gap-12 py-16 lg:grid-cols-12 lg:gap-8 lg:py-20">
+        {/* ---- BRAND + CONTACT ---------------------------------------- */}
+        <div className="grid gap-14 py-16 lg:grid-cols-12 lg:gap-10 lg:py-20">
+          {/* Brand column */}
           <motion.div
             className="lg:col-span-4"
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.4 }}
+            viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: d(0.7), ease: EASE }}
           >
             <Link href="/" aria-label={`${company.legalName} — home`}>
-              <Logo variant="light" height={38} />
+              <Logo variant="light" height={40} />
             </Link>
 
             <p className="mt-7 max-w-xs text-sm leading-relaxed text-ink-400">
               Industrial control panels and turnkey automation, engineered and
-              built in Coimbatore since 2007.
+              built in Coimbatore since {company.foundedYear}.
             </p>
 
             <Link
@@ -159,12 +161,39 @@ export function Footer() {
                 →
               </span>
             </Link>
+
+            {/* Social. Grouped with the brand rather than buried beside the
+                copyright, where it reads as an afterthought. */}
+            {socials.length > 0 ? (
+              <div className="mt-10">
+                <p className="eyebrow text-ink-600">Follow</p>
+                <div className="mt-4 flex items-center gap-3">
+                  {socials.map((social) => {
+                    const Icon =
+                      socialIcons[social.platform as keyof typeof socialIcons];
+                    if (!Icon) return null;
+
+                    return (
+                      <Link
+                        key={social.platform}
+                        href={social.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`${company.shortName} on ${social.platform}`}
+                        className="group inline-flex h-11 w-11 items-center justify-center rounded-lg border border-ink-800 bg-ink-900/60 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:border-accent-500/50 hover:bg-accent-500/10 hover:shadow-[0_8px_24px_-8px_rgba(63,163,91,0.45)]"
+                      >
+                        <Icon className="h-[1.05rem] w-[1.05rem] text-ink-400 transition-colors duration-500 group-hover:text-accent-400" />
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : null}
           </motion.div>
 
-          {/* Contact items. Each is a full hoverable block with an iconed
-              plate, not a bare line of text — these are the actions a buyer
-              actually came here for. */}
-          <div className="grid gap-8 sm:grid-cols-3 lg:col-span-8 lg:pl-8">
+          {/* Contact column. Each item is a full hoverable block with an
+              iconed plate — these are the actions a buyer came here for. */}
+          <div className="grid gap-9 sm:grid-cols-3 lg:col-span-8 lg:pl-10">
             {contactItems.map((item, index) => {
               const Icon = item.icon;
 
@@ -173,7 +202,7 @@ export function Footer() {
                   key={item.label}
                   initial={{ opacity: 0, y: 16 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.4 }}
+                  viewport={{ once: true, amount: 0.3 }}
                   transition={{
                     duration: d(0.7),
                     delay: d(0.1 + index * 0.08),
@@ -187,9 +216,6 @@ export function Footer() {
                       : {})}
                     className="group block"
                   >
-                    {/* Icon plate. Border and background shift on hover and
-                        the plate lifts — enough to read as a control without
-                        adding a button. */}
                     <span className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-ink-800 bg-ink-900/60 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-0.5 group-hover:border-accent-500/50 group-hover:bg-accent-500/10 group-hover:shadow-[0_8px_24px_-8px_rgba(63,163,91,0.45)]">
                       <Icon
                         aria-hidden="true"
@@ -219,7 +245,7 @@ export function Footer() {
           </div>
         </div>
 
-        {/* ---- NAVIGATION GRID ---------------------------------------- */}
+        {/* ---- NAVIGATION --------------------------------------------- */}
         <div className="grid gap-10 border-t border-ink-800/70 py-14 sm:grid-cols-3">
           {footerNavigation.map((group, groupIndex) => (
             <motion.div
@@ -257,41 +283,16 @@ export function Footer() {
           ))}
         </div>
 
-        {/* ---- LEGAL STRIP --------------------------------------------- */}
-        <div className="flex flex-col gap-6 border-t border-ink-800/70 py-8 md:flex-row md:items-center md:justify-between">
-          <div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-5">
-            <p className="text-xs text-ink-600">
-              © {new Date().getFullYear()} {company.legalName}. All rights
-              reserved.
+        {/* ---- LEGAL --------------------------------------------------- */}
+        <div className="flex flex-col gap-3 border-t border-ink-800/70 py-8 md:flex-row md:items-center md:justify-between">
+          <p className="text-xs text-ink-600">
+            © {new Date().getFullYear()} {company.legalName}. All rights
+            reserved.
+          </p>
+          {gstin ? (
+            <p className="font-mono text-xs tracking-[0.06em] text-ink-700">
+              GSTIN {gstin}
             </p>
-            {gstin ? (
-              <p className="font-mono text-xs tracking-[0.06em] text-ink-700">
-                GSTIN {gstin}
-              </p>
-            ) : null}
-          </div>
-
-          {socials.length > 0 ? (
-            <div className="flex items-center gap-3">
-              {socials.map((social) => {
-                const Icon =
-                  socialIcons[social.platform as keyof typeof socialIcons];
-                if (!Icon) return null;
-
-                return (
-                  <Link
-                    key={social.platform}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`${company.shortName} on ${social.platform}`}
-                    className="group inline-flex h-10 w-10 items-center justify-center rounded-lg border border-ink-800 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:border-accent-500/50 hover:bg-accent-500/10"
-                  >
-                    <Icon className="h-4 w-4 text-ink-500 transition-colors duration-500 group-hover:text-accent-400" />
-                  </Link>
-                );
-              })}
-            </div>
           ) : null}
         </div>
       </div>

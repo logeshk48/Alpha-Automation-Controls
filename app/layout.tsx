@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Archivo, Inter, JetBrains_Mono } from "next/font/google";
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/navigation/Navbar";
+import { BackToTop } from "@/components/ui/BackToTop";
 import "./globals.css";
 
 /* --------------------------------------------------------------------------
@@ -97,6 +98,10 @@ export default function RootLayout({
         <main id="main">{children}</main>
 
         <Footer />
+
+        {/* Floating control. Outside main so it is not caught by the skip
+            link, and below the navbar in the stack so it never overlaps. */}
+        <BackToTop />
       </body>
     </html>
   );

@@ -16,16 +16,21 @@ import { primaryCta } from "@/data/navigation";
    A `fixed` element positions against the viewport and escapes every
    ancestor's overflow, so the image painted across the entire page and sat
    on top of the hero. overflow-hidden does not contain it; a fixed child is
-   only confined when an ancestor creates a containing block for it, which
-   requires a transform, filter or clip-path.
+   only confined when an ancestor creates a containing block, which requires
+   a transform, filter or clip-path.
 
    So the outer wrapper is absolute, clipped with clip-path: inset(0), and
-   the fixed layer lives inside it. The result is a window onto a stationary
-   image, confined to this section.
+   the fixed layer lives inside it — a window onto a stationary image,
+   confined to this section.
 
-   On touch the fixed layer is dropped entirely: mobile browsers resize the
-   viewport as their chrome hides and shows, which makes any viewport-locked
+   On touch the fixed layer is dropped: mobile browsers resize the viewport
+   as their chrome hides and shows, which makes any viewport-locked
    background shudder.
+
+   CENTRED LAYOUT: the scrim is a flat wash rather than the horizontal
+   gradient a left-aligned version used. A directional gradient only works
+   when the copy sits on one side; centred text needs even coverage, so the
+   image is darkened uniformly instead.
    -------------------------------------------------------------------------- */
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -46,12 +51,12 @@ export function FinalCta() {
         <div className="fixed inset-0">
           <Image
             src="/images/cta/factory-floor.jpg"
-            /* Decorative — the heading beside it carries the meaning, and a
-               description here would be noise for screen reader users. */
+            /* Decorative — the heading carries the meaning, and a description
+               here would be noise for screen reader users. */
             alt=""
             fill
-            /* Full-bleed at every breakpoint, so the widest variant is
-               always the right one to fetch. */
+            /* Full-bleed at every breakpoint, so the widest variant is always
+               the right one to fetch. */
             sizes="100vw"
             className="object-cover"
           />
@@ -73,29 +78,34 @@ export function FinalCta() {
         aria-hidden="true"
         className="texture-grid pointer-events-none absolute inset-0 -z-10 text-ink-500 opacity-20"
       />
-      {/* Scrim. Deeper than a gradient background would need — a photograph
-          carries far more visual noise, and the copy has to hold contrast
-          over whatever part of it sits behind. Horizontal, so the left stays
-          dark for the text while the right opens up and the image reads. */}
+      {/* Flat scrim plus a vertical lift at the edges. Even coverage for the
+          centred copy, with the middle band kept slightly clearer so the
+          machinery still reads behind it. */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-linear-to-r from-ink-950/95 via-ink-950/80 to-ink-950/55"
+        className="absolute inset-0 -z-10 bg-ink-950/80"
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 -z-10 bg-linear-to-b from-ink-950/60 via-transparent to-ink-950/60"
       />
 
-                  <div className="shell relative py-20 md:py-24">
-        <div className="max-w-4xl">
+      <div className="shell relative py-20 md:py-24">
+        <div className="mx-auto max-w-3xl text-center">
           <motion.p
-            className="eyebrow flex items-center gap-3 text-ink-400"
+            className="eyebrow inline-flex items-center gap-3 text-ink-400"
             initial={{ opacity: 0, y: 6 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.5 }}
             transition={{ duration: d(0.5), ease: EASE }}
           >
+            <span aria-hidden="true" className="h-px w-8 bg-ink-700" />
             <span
               aria-hidden="true"
               className="inline-block h-1.5 w-1.5 rounded-full bg-accent-500"
             />
             Ready when you are
+            <span aria-hidden="true" className="h-px w-8 bg-ink-700" />
           </motion.p>
 
           {/* Two masked lines, the second trailing the first. */}
@@ -148,7 +158,7 @@ export function FinalCta() {
           </h2>
 
           <motion.p
-            className="mt-8 max-w-xl text-[1.0625rem] leading-relaxed text-ink-300"
+            className="mx-auto mt-8 max-w-xl text-[1.0625rem] leading-relaxed text-ink-300"
             initial={{ opacity: 0, y: 14 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.5 }}
@@ -160,7 +170,7 @@ export function FinalCta() {
           </motion.p>
 
           <motion.div
-            className="mt-11 flex flex-col gap-5 sm:flex-row sm:items-center"
+            className="mt-11 flex flex-col items-center gap-5 sm:flex-row sm:justify-center"
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.5 }}
@@ -198,16 +208,16 @@ export function FinalCta() {
 
           {/* Location line — a small credibility marker at the close. */}
           <motion.p
-            className="eyebrow mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-ink-600"
+            className="eyebrow mt-10 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-ink-500"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, amount: 0.5 }}
             transition={{ duration: d(0.8), delay: d(0.5), ease: EASE }}
           >
             <span>Coimbatore, Tamil Nadu</span>
-            <span aria-hidden="true" className="h-px w-6 bg-ink-800" />
+            <span aria-hidden="true" className="h-px w-6 bg-ink-700" />
             <span>UL &amp; CE certified manufacturing</span>
-            <span aria-hidden="true" className="h-px w-6 bg-ink-800" />
+            <span aria-hidden="true" className="h-px w-6 bg-ink-700" />
             <span>Since 2007</span>
           </motion.p>
         </div>
