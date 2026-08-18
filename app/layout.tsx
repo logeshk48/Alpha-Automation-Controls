@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Archivo, Inter, JetBrains_Mono } from "next/font/google";
+import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/navigation/Navbar";
 import "./globals.css";
 
@@ -95,7 +96,7 @@ export default function RootLayout({
 
         <main id="main">{children}</main>
 
-        {/* Footer mounts here in Phase 3b, once contact details are confirmed. */}
+        <Footer />
       </body>
     </html>
   );

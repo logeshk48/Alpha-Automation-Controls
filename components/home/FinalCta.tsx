@@ -82,7 +82,7 @@ export function FinalCta() {
         className="absolute inset-0 -z-10 bg-linear-to-r from-ink-950/95 via-ink-950/80 to-ink-950/55"
       />
 
-            <div className="shell relative py-24 md:py-32">
+                  <div className="shell relative py-20 md:py-24">
         <div className="max-w-4xl">
           <motion.p
             className="eyebrow flex items-center gap-3 text-ink-400"
@@ -198,7 +198,7 @@ export function FinalCta() {
 
           {/* Location line — a small credibility marker at the close. */}
           <motion.p
-            className="eyebrow mt-16 flex flex-wrap items-center gap-x-4 gap-y-2 text-ink-600"
+            className="eyebrow mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-ink-600"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, amount: 0.5 }}
