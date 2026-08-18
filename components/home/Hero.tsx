@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { FadeIn } from "@/components/motion/FadeIn";
 import { Reveal } from "@/components/motion/Reveal";
@@ -10,42 +11,63 @@ import { primaryCta, secondaryCta } from "@/data/navigation";
    Full-viewport dark band. A Server Component — only the motion wrappers
    inside are client-side.
 
-   The metrics used to live at the base of this section. They now have their
-   own band below, because once video sits behind the hero the imagery needs
-   the full frame — a row of counters eating a fifth of it would fight the
-   footage rather than support it.
+   The metrics used to sit at the base of this section. They now have their
+   own band below, because the imagery needs the full frame — a row of
+   counters eating a fifth of it fought the photograph rather than
+   supporting it.
 
    Everything here uses trigger="mount": scroll-triggered reveals start fully
    hidden, so anything visible before the first scroll must not depend on an
    intersection observer firing.
 
-   IMAGERY: background is currently a layered gradient plus grid texture.
-   Photography or video drops into the marked slot with no other change — the
-   scrim below is already tuned for it.
+   FOR VIDEO LATER: replace the Image below with a <video> carrying muted,
+   autoPlay, loop, playsInline and a poster, and suppress it under
+   prefers-reduced-motion. The gradient and scrim layers stay exactly as they
+   are — they are already tuned for moving footage.
    -------------------------------------------------------------------------- */
 
 export function Hero() {
   return (
     <section className="relative isolate flex min-h-svh flex-col justify-center overflow-hidden bg-ink-950 text-ink-000">
       {/* ---- BACKGROUND -----------------------------------------------
-          For a still:
-            <Image src="/images/hero/..." alt="" fill priority
-                   className="object-cover" />
+          The gradient stays beneath the photograph as a fallback, so a slow
+          connection shows a designed panel rather than a black hole while
+          the image loads.
 
-          For video, per the brief: muted, autoplay, loop, playsInline, with
-          a poster, and suppressed under prefers-reduced-motion. */}
+          priority: this is the largest element above the fold, so it is the
+          Largest Contentful Paint. Without it Next defers the fetch and the
+          hero renders empty for a beat. */}
       <div
         aria-hidden="true"
         className="absolute inset-0 -z-20 bg-[radial-gradient(120%_100%_at_78%_-10%,#1c2735_0%,#0d0f11_52%,#08090a_100%)]"
       />
-      <div
-        aria-hidden="true"
-        className="texture-grid pointer-events-none absolute inset-0 -z-10 text-ink-500 opacity-25"
+      <Image
+        src="/images/hero/hero.jpg"
+        /* Decorative — the headline over it carries the meaning, and a
+           description here would be noise for screen reader users. */
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        className="-z-20 object-cover"
       />
-      {/* Bottom scrim. Guarantees text contrast whatever sits behind it. */}
+
       <div
         aria-hidden="true"
-        className="absolute inset-x-0 bottom-0 -z-10 h-2/3 bg-linear-to-t from-ink-950 via-ink-950/60 to-transparent"
+        className="texture-grid pointer-events-none absolute inset-0 -z-10 text-ink-500 opacity-20"
+      />
+      {/* Scrim. Heavier on the left where the copy sits, opening up to the
+          right so the machinery reads. A flat wash would either wash out the
+          image or leave the headline fighting for contrast. */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 -z-10 bg-linear-to-r from-ink-950/95 via-ink-950/75 to-ink-950/40"
+      />
+      {/* Bottom lift, so the metrics band below transitions into this rather
+          than butting against a bright edge. */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 bottom-0 -z-10 h-1/3 bg-linear-to-t from-ink-950 to-transparent"
       />
 
       {/* ---- CONTENT ---------------------------------------------------
@@ -53,7 +75,7 @@ export function Hero() {
           the block optically centred rather than top-anchored. */}
       <div className="shell relative w-full pb-20 pt-40 md:pb-24 md:pt-44">
         <FadeIn distance={10} trigger="mount">
-          <p className="eyebrow flex items-center gap-3 text-ink-400">
+          <p className="eyebrow flex items-center gap-3 text-ink-300">
             <span
               aria-hidden="true"
               className="inline-block h-1.5 w-1.5 rounded-full bg-accent-500"
@@ -84,13 +106,13 @@ export function Hero() {
               {/* The single accent word on the page. It carries the
                   proposition, so nothing else competes with it. */}
               <span className="text-accent-400">{hero.headingEmphasis}</span>{" "}
-              <span className="text-ink-400">{hero.headingTail}</span>
+              <span className="text-ink-300">{hero.headingTail}</span>
             </Reveal>
           </span>
         </h1>
 
         <FadeIn delay={0.5} trigger="mount">
-          <p className="mt-8 max-w-xl text-[0.9375rem] leading-relaxed text-ink-300 md:text-base">
+          <p className="mt-8 max-w-xl text-[0.9375rem] leading-relaxed text-ink-200 md:text-base">
             {hero.description}
           </p>
         </FadeIn>
@@ -112,9 +134,12 @@ export function Hero() {
               </span>
             </Link>
 
+            {/* Backdrop blur on the outlined button: over a photograph a
+                plain border reads as weak, and a solid fill would compete
+                with the primary action. */}
             <Link
               href={secondaryCta.href}
-              className="group flex items-center justify-center gap-2 rounded-lg border border-ink-700 px-7 py-4 text-sm font-semibold text-ink-100 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-ink-500 hover:bg-ink-000/5"
+              className="group flex items-center justify-center gap-2 rounded-lg border border-ink-600 bg-ink-950/30 px-7 py-4 text-sm font-semibold text-ink-100 backdrop-blur-sm transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-ink-400 hover:bg-ink-950/50"
             >
               {secondaryCta.label}
               <span
@@ -133,8 +158,8 @@ export function Hero() {
         aria-hidden="true"
         className="pointer-events-none absolute bottom-7 right-[--shell-gutter] hidden items-center gap-3 lg:flex"
       >
-        <span className="eyebrow text-ink-600">Scroll</span>
-        <span className="relative block h-9 w-px overflow-hidden bg-ink-800">
+        <span className="eyebrow text-ink-500">Scroll</span>
+        <span className="relative block h-9 w-px overflow-hidden bg-ink-700">
           <span className="absolute inset-x-0 top-0 h-3 animate-[scrollCue_2.4s_cubic-bezier(0.65,0,0.35,1)_infinite] bg-accent-500" />
         </span>
       </div>
