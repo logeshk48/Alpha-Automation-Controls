@@ -3,6 +3,7 @@ import { Hero } from "@/components/home/Hero";
 import { Metrics } from "@/components/home/Metrics";
 import { Process } from "@/components/home/Process";
 import { Solutions } from "@/components/home/Solutions";
+import { Customers } from "@/components/home/Customers";
 
 export const metadata: Metadata = {
   title:
@@ -19,6 +20,7 @@ export default function HomePage() {
       <Metrics />
       <Solutions />
       <Process />
+      <Customers />
 
       {/* Sections 03–05 and the closing CTA mount here as they are built. */}
     </>
