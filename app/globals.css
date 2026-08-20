@@ -120,9 +120,25 @@
   }
 
   html {
-    scroll-behavior: smooth;
+    /*
+      DELIBERATELY NOT scroll-behavior: smooth.
+
+      Setting it on the root applies it to route changes as well as anchor
+      jumps, so navigating between pages animates rather than jumping — and
+      the new page frequently settles part-way down instead of at the top.
+      That was a real bug here: leaving About and returning landed mid-page.
+
+      Smooth behaviour is opt-in via .smooth-anchors below, and the
+      back-to-top button passes behavior:"smooth" in JavaScript, which is
+      independent of this property and still works.
+    */
     scroll-padding-top: var(--nav-height);
     -webkit-text-size-adjust: 100%;
+  }
+
+  /* Opt-in smooth scrolling, for in-page anchor jumps only. */
+  html.smooth-anchors {
+    scroll-behavior: smooth;
   }
 
   body {
@@ -275,8 +291,7 @@
    KEYFRAMES
    ========================================================================== */
 
-/* Hero scroll cue — an accent segment travelling down a hairline.
-   Suppressed by the reduced-motion block below. */
+/* Hero scroll cue — an accent segment travelling down a hairline. */
 @keyframes scrollCue {
   0% {
     transform: translateY(-100%);
@@ -286,13 +301,55 @@
   }
 }
 
+/* Play control ring. Expands and fades outward, continuously — reserved for
+   the single element on the page the visitor is meant to click. */
+@keyframes playPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1.45);
+    opacity: 0;
+  }
+}
+
+/* Ambient field. Two accent blooms drifting on long, offset cycles behind
+   the About advantages.
+
+   Deliberately slow — barely perceptible frame to frame, so the section
+   feels alive without anything visibly moving. Anything faster reads as a
+   screensaver. translate3d rather than top/left keeps it on the compositor,
+   so it costs nothing in layout or paint. */
+@keyframes driftA {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(12%, 22%, 0) scale(1.15);
+  }
+}
+
+@keyframes driftB {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1.1);
+  }
+  50% {
+    transform: translate3d(-14%, -18%, 0) scale(1);
+  }
+}
+
 /* ==========================================================================
    REDUCED MOTION — global safety net.
-   Components must ALSO branch on useReducedMotion(), not rely on this alone.
+   Last in the file so it overrides everything above it. Components must
+   ALSO branch on useReducedMotion(), not rely on this alone.
    ========================================================================== */
 
 @media (prefers-reduced-motion: reduce) {
-  html {
+  html,
+  html.smooth-anchors {
     scroll-behavior: auto;
   }
 
